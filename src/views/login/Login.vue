@@ -34,6 +34,7 @@
 <script>
 import request from "@/utils/request";
 import Cookies from 'js-cookie'
+import Qs from 'qs'
 
 export default {
   name: 'LOGIN',
@@ -57,7 +58,7 @@ export default {
     login() {
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
-          request.post('/admin/login', this.admin).then(res => {
+          request.post('/admin/login',this.admin).then(res => {
             if (res.code === '200') {
               this.loginAdmin = res.data  // 滑块组件就出现了
             } else {
