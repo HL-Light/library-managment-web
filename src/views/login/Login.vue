@@ -26,6 +26,16 @@
           <el-form-item>
             <el-button style="width: 100%" size="medium" type="primary" @click="login">登录</el-button>
           </el-form-item>
+          <el-form-item label="角色">
+            <el-select v-model="value" clearable placeholder="请选择角色">
+              <el-option
+                      v-for="item in options"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value">
+              </el-option>
+            </el-select>
+          </el-form-item>
         </el-form>
       </div>
   </div>
@@ -34,42 +44,63 @@
 <script>
 import request from "@/utils/request";
 import Cookies from 'js-cookie'
-import Qs from 'qs'
+import jwt_decode from 'jwt-decode'
 
 export default {
-  name: 'LOGIN',
-  data() {
-    return {
-      loginAdmin: {},
-      admin: {},
-      rules: {
-        username: [
-          { required: true, message: '请输入用户名', trigger: 'blur'},
-          { min: 3, max: 10, message: '长度在3-10个字符', trigger: 'blur'}
-        ],
-        password: [
-          { required: true, message: '请输入密码', trigger: 'blur'},
-          { min: 3, max: 10, message: '长度在3-10个字符', trigger: 'blur'}
-        ]
-      }
-    }
-  },
+    name: 'LOGIN',
+    data() {
+        return {
+            value: '',
+            options: [{
+                label: '管理员',
+                value: '1'
+            },{
+                label: '用户',
+                value: '2'
+            }],
+            loginAdmin: {},
+            admin: {},
+            rules: {
+                username: [
+                    { required: true, message: '请输入用户名', trigger: 'blur'},
+                    { min: 3, max: 10, message: '长度在3-10个字符', trigger: 'blur'}
+                ],
+                password: [
+                    { required: true, message: '请输入密码', trigger: 'blur'},
+                    { min: 3, max: 10, message: '长度在3-10个字符', trigger: 'blur'}
+                ]
+            }
+        }
+    },
   methods: {
     login() {
       this.$refs['loginForm'].validate((valid) => {
         if (valid) {
-          request.post('/admin/login',this.admin).then(res => {
-            if (res.code === '200') {
-              this.loginAdmin = res.data  // 滑块组件就出现了
-            } else {
-              this.$notify.error(res.msg)
+            if(this.value ==1){
+                request.post('/admin/login',this.admin).then(res => {
+                    if (res.code === '200') {
+                        this.loginAdmin = res.data  // 滑块组件就出现了
+                    } else {
+                        this.$notify.error(res.msg)
+                    }
+                })
+            }else if (this.value == 2) {
+                request.post('/user/login',this.admin).then(res => {
+                    if (res.code === '200') {
+                        this.loginAdmin = res.data  // 滑块组件就出现了
+                    } else {
+                        this.$notify.error(res.msg)
+                    }
+                })
             }
-          })
         }
       })
     },
     onSuccess() { // 滑块验证通过之后触发的
-      Cookies.set('admin', JSON.stringify(this.loginAdmin))
+      const decoded = jwt_decode(this.loginAdmin.token)
+      Cookies.set("role",decoded.role)
+      Cookies.set("roles",decoded.roles)
+      Cookies.set('token', JSON.stringify(this.loginAdmin))
       this.$notify.success("登录成功")
       this.$router.push('/')
     },

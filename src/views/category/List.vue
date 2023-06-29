@@ -9,8 +9,8 @@
 
     <el-table :data="tableData" stripe row-key="id"  default-expand-all>
       <el-table-column prop="id" label="编号" width="80"></el-table-column>
-      <el-table-column prop="name" label="名称"></el-table-column>
-      <el-table-column prop="remark" label="备注"></el-table-column>
+      <el-table-column prop="name" label="分类号"></el-table-column>
+      <el-table-column prop="remark" label="分类名"></el-table-column>
       <el-table-column prop="createtime" label="创建时间"></el-table-column>
       <el-table-column prop="updatetime" label="更新时间"></el-table-column>
       <el-table-column label="操作" width="280">
@@ -67,7 +67,7 @@ export default {
   name: 'CategoryList',
   data() {
     return {
-      admin: Cookies.get('admin') ? JSON.parse(Cookies.get('admin')) : {},
+      admin: Cookies.get('token') ? JSON.parse(Cookies.get('token')) : {},
       tableData: [],
       total: 0,
       dialogFormVisible: false,

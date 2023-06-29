@@ -2,7 +2,7 @@
   <div>
     <!--    搜索表单-->
     <div style="margin-bottom: 20px">
-      <el-input style="width: 240px" placeholder="请输入图书名称" v-model="params.name"></el-input>
+      <el-input style="width: 240px" placeholder="请输入图书名称" v-model="params.bookName"></el-input>
       <el-input style="width: 240px; margin-left: 5px" placeholder="请输入图书标准码" v-model="params.bookNo"></el-input>
       <el-input style="width: 240px; margin-left: 5px" placeholder="请输入用户名称" v-model="params.userName"></el-input>
       <el-button style="margin-left: 5px" type="primary" @click="load"><i class="el-icon-search"></i> 搜索</el-button>
@@ -13,17 +13,17 @@
       <el-table-column prop="id" label="编号" width="80"></el-table-column>
       <el-table-column prop="bookName" label="图书名称"></el-table-column>
       <el-table-column prop="bookNo" label="图书标准码"></el-table-column>
-      <el-table-column prop="userNo" label="会员码"></el-table-column>
+      <el-table-column prop="userNo" label="用户码"></el-table-column>
       <el-table-column prop="userName" label="用户名称"></el-table-column>
-      <el-table-column prop="userPhone" label="用户联系方式"></el-table-column>
-      <el-table-column prop="score" label="所用积分"></el-table-column>
+      <el-table-column prop="userPhone" label="联系方式"></el-table-column>
+      <el-table-column prop="score" label="所用金额" v-if="false"></el-table-column>
       <el-table-column prop="createtime" label="借出日期"></el-table-column>
       <el-table-column prop="status" label="借出状态"></el-table-column>
       <el-table-column prop="days" label="借出天数"></el-table-column>
-      <el-table-column prop="returnDate" label="归还日期"></el-table-column>
+      <el-table-column prop="returnDate" label="应还日期"></el-table-column>
       <el-table-column prop="realDate" label="实际归还日期"></el-table-column>
 <!--      <el-table-column prop="updatetime" label="更新时间"></el-table-column>-->
-      <el-table-column label="操作">
+      <el-table-column label="操作" v-if="role < 3">
         <template v-slot="scope">
 <!--          scope.row 就是当前行数据-->
 <!--          <el-button type="primary" @click="$router.push('/editBorrow?id=' + scope.row.id)">编辑</el-button>-->
@@ -61,7 +61,8 @@ export default {
   name: 'ReturList',
   data() {
     return {
-      admin: Cookies.get('admin') ? JSON.parse(Cookies.get('admin')) : {},
+        role: " ",
+      admin: Cookies.get('token') ? JSON.parse(Cookies.get('token')) : {},
       tableData: [],
       total: 0,
       params: {
@@ -73,6 +74,8 @@ export default {
     }
   },
   created() {
+      const id = this.$route.query.id
+      this.role = Cookies.get('role')
     this.load()
   },
   methods: {

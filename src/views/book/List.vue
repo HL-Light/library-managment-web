@@ -11,13 +11,13 @@
     <el-table :data="tableData" stripe row-key="id"  default-expand-all>
       <el-table-column prop="id" label="编号" width="80"></el-table-column>
       <el-table-column prop="name" label="图书名称"></el-table-column>
-      <el-table-column prop="bookNo" label="标准码"></el-table-column>
+      <el-table-column prop="bookNo" label="ISBN"></el-table-column>
       <el-table-column prop="description" width="200" label="描述"></el-table-column>
       <el-table-column prop="publishDate" label="出版日期"></el-table-column>
       <el-table-column prop="author" label="作者"></el-table-column>
       <el-table-column prop="publisher" label="出版社"></el-table-column>
-      <el-table-column prop="category" label="分类"></el-table-column>
-      <el-table-column prop="score" label="借书积分"></el-table-column>
+      <el-table-column prop="category" label="分类号"></el-table-column>
+      <el-table-column prop="score" label="借书积分" v-if="false"></el-table-column>
       <el-table-column prop="nums" label="数量"></el-table-column>
       <el-table-column prop="cover" label="封面">
         <template v-slot="scope">
@@ -26,17 +26,18 @@
       </el-table-column>
       <el-table-column prop="createtime" label="创建时间"></el-table-column>
       <el-table-column prop="updatetime" label="更新时间"></el-table-column>
-      <el-table-column label="操作" width="140">
+      <el-table-column label="操作" width="210">
         <template v-slot="scope">
 <!--          scope.row 就是当前行数据-->
-          <el-button type="primary" @click="$router.push('/editBook?id=' + scope.row.id)">编辑</el-button>
+          <el-button type="primary" @click="$router.push('/bookList_c?id=' + scope.row.id)">详情</el-button>
+          <el-button type="primary" @click="$router.push('/editBook?id=' + scope.row.id)" v-if="role < 3">编辑</el-button>
           <el-popconfirm
-              style="margin-left: 5px"
-              title="您确定删除这行数据吗？"
-              @confirm="del(scope.row.id)"
-          >
-            <el-button type="danger" slot="reference">删除</el-button>
-          </el-popconfirm>
+                style="margin-left: 5px"
+                title="您确定删除这行数据吗？"
+                @confirm="del(scope.row.id)"
+        >
+            <el-button type="danger" slot="reference" v-if="role < 3" >删除</el-button>
+        </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
@@ -64,7 +65,8 @@ export default {
   name: 'BookList',
   data() {
     return {
-      admin: Cookies.get('admin') ? JSON.parse(Cookies.get('admin')) : {},
+        role: " ",
+      admin: Cookies.get('token') ? JSON.parse(Cookies.get('token')) : {},
       tableData: [],
       total: 0,
       params: {
@@ -76,6 +78,8 @@ export default {
     }
   },
   created() {
+      const id = this.$route.query.id
+      this.role = Cookies.get('role')
     this.load()
   },
   methods: {

@@ -64,12 +64,17 @@ const routes = [
       { path: 'bookList', name: 'BookList', component: () => import('@/views/book/List.vue') },
       { path: 'addBook', name: 'AddBook', component: () => import('@/views/book/Add.vue') },
       { path: 'editBook', name: 'EditBook', component: () => import('@/views/book/Edit.vue') },
+      { path: 'bookList_c', name: 'BookList_c', component: () => import('@/views/book/List_c.vue') },
+      { path: 'listAdd', name: 'ListAdd', component: () => import('@/views/book/ListAdd.vue') },
       //  ====  Borrow  ====
       { path: 'borrowList', name: 'BorrowList', component: () => import('@/views/borrow/List.vue') },
       { path: 'addBorrow', name: 'AddBorrow', component: () => import('@/views/borrow/Add.vue') },
       { path: 'editBorrow', name: 'EditBorrow', component: () => import('@/views/borrow/Edit.vue') },
       //  ====  Return  ====
       { path: 'returList', name: 'returList', component: () => import('@/views/retur/List.vue') },
+      //  ====  authority ===
+      { path: 'roleList' , name: 'Rolelist', component: () => import('@/views/authority/Rolelist.vue') },
+      { path: 'roleEdit' , name: 'RoleEdit', component: () => import('@/views/authority/Roleedit.vue') },
     ]
   },
   {
@@ -86,8 +91,8 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   if (to.path === '/login') next()
-  const admin = Cookies.get("admin")
-  if (!admin && to.path !== '/login') return next("/login")  // 强制退回到登录页面
+  const token = Cookies.get("token")
+  if (!token && to.path !== '/login') return next("/login")  // 强制退回到登录页面
   // 访问 /home 的时候，并且cookie里面存在数据，这个时候我就直接放行
   next()
 })

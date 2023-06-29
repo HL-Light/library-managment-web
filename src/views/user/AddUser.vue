@@ -15,8 +15,27 @@
       <el-form-item label="联系方式" prop="phone">
         <el-input v-model="form.phone" placeholder="请输入联系方式"></el-input>
       </el-form-item>
+      <el-form-item label="学院" prop="academy">
+        <el-input v-model="form.academy" placeholder="请输入学院"></el-input>
+      </el-form-item>
+      <el-form-item label="专业" prop="speciality">
+        <el-input v-model="form.speciality" placeholder="请输入专业"></el-input>
+      </el-form-item>
+      <el-form-item label="班级" prop="classes">
+        <el-input v-model="form.classes" placeholder="请输入班级"></el-input>
+      </el-form-item>
       <el-form-item label="地址" prop="address">
         <el-input v-model="form.address" placeholder="请输入地址"></el-input>
+      </el-form-item>
+      <el-form-item label="角色" prop="role">
+        <el-select v-model="form.role" clearable placeholder="请选择角色">
+          <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
     </el-form>
 
@@ -52,6 +71,7 @@ export default {
     };
     return {
       form: {sex: '男'},
+      options: [],
       rules: {
         name: [
           { required: true, message: '请输入姓名', trigger: 'blur'}
@@ -65,6 +85,16 @@ export default {
       }
     }
   },
+  created() {
+        request.get('/role/list').then(res => {
+            this.options = res.data.map(item => {
+                return {
+                    label: item.rolename,
+                    value: item.id
+                }
+            })
+        })
+    },
   methods: {
     save() {
       this.$refs['ruleForm'].validate((valid) => {

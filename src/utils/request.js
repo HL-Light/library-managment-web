@@ -1,10 +1,10 @@
-import axios from 'axios'
+import axios from 'axios';
 import router from "@/router";
 import Cookies from 'js-cookie'
 
+
 const request = axios.create({
     baseURL: 'http://127.0.0.1:9090/api',
-    withCredentials:  false,
     timeout: 5000
 })
 
@@ -14,7 +14,7 @@ const request = axios.create({
 request.interceptors.request.use(config => {
     config.headers['Content-Type'] = 'application/json;charset=utf-8';
 
-    const adminJson = Cookies.get('admin')
+    const adminJson = Cookies.get('token')
     if (adminJson) {
         // 设置请求头
         config.headers['token'] = JSON.parse(adminJson).token

@@ -11,6 +11,16 @@
       <el-form-item label="邮箱">
         <el-input v-model="form.email" placeholder="请输入地址"></el-input>
       </el-form-item>
+      <el-form-item label="角色" v-if="role == 1">
+        <el-select v-model="form.role" clearable placeholder="请选择角色">
+          <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
     </el-form>
 
     <div style="text-align: center; margin-top: 30px">
@@ -21,16 +31,28 @@
 
 <script>
 import request from "@/utils/request";
+import Cookies from 'js-cookie'
 
 export default {
   name: 'EditAdmin',
   data() {
     return {
+      role: " ",
+      options: [],
       form: {}
     }
   },
   created() {
     const id = this.$route.query.id
+    this.role = Cookies.get('role')
+      request.get('/role/list').then(res =>{
+          this.options = res.data.map(item => {
+              return {
+                  label: item.rolename,
+                  value: item.id
+              }
+          })
+      })
     request.get("/admin/" + id).then(res => {
       this.form = res.data
     })

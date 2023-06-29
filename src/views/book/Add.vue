@@ -29,14 +29,17 @@
             v-model="form.categories"
             :options="categories"></el-cascader>
       </el-form-item>
-      <el-form-item label="标准码" prop="bookNo">
+      <el-form-item label="ISBN" prop="bookNo">
         <el-input v-model="form.bookNo" placeholder="请输入标准码"></el-input>
       </el-form-item>
-      <el-form-item label="借书积分" prop="cover">
+      <el-form-item label="借书积分" prop="cover" v-if="false">
         <el-input-number v-model="form.score" :min="10" :max="30" label="所需积分"></el-input-number>
       </el-form-item>
-      <el-form-item label="数量" prop="nums">
+      <el-form-item label="数量" prop="nums" v-if="false">
         <el-input v-model="form.nums" placeholder="请输入数量"></el-input>
+      </el-form-item>
+      <el-form-item label="书架位置" prop="nums">
+        <el-input v-model="form.adress" placeholder="请输入位置"></el-input>
       </el-form-item>
       <br>
       <el-form-item label="封面" prop="cover">
@@ -73,8 +76,8 @@ export default {
       callback()
     };
     return {
-      admin: Cookies.get('admin') ? JSON.parse(Cookies.get('admin')) : {},
-      form: {  score: 10, cover: '' },
+      admin: Cookies.get('token') ? JSON.parse(Cookies.get('token')) : {},
+      form: {  score: 0, cover: '' , nums: 1},
       categories: [],
       rules: {
         name: [
@@ -108,8 +111,15 @@ export default {
     },
     save() {
       this.$refs['ruleForm'].validate((valid) => {
+          console.log(this.form.categories)
         if (valid) {
-          request.post('/book/save', this.form).then(res => {
+            const categoryStr = this.form.categories.join('')
+            this.form.category = categoryStr
+            console.log(this.form.category)
+          request.post('/book/save', {
+                  ...this.form,
+                  adress: this.form.adress
+        }).then(res => {
             if (res.code === '200') {
               this.$notify.success('新增成功')
               this.$refs['ruleForm'].resetFields()

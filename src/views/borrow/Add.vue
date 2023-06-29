@@ -2,7 +2,7 @@
   <div style="width: 80%">
     <div style="margin-bottom: 30px">新增借书记录</div>
     <el-form :inline="true" :rules="rules" ref="ruleForm" :model="form" label-width="100px">
-      <el-form-item label="图书标准码" prop="bookNo">
+      <el-form-item label="ISBN" prop="bookNo">
         <el-select v-model="form.bookNo" clearable filterable placeholder="请选择" @change="selBook">
           <el-option
               v-for="item in books"
@@ -15,14 +15,14 @@
       <el-form-item label="图书名称" prop="bookName">
         <el-input v-model="form.bookName" disabled></el-input>
       </el-form-item>
-      <el-form-item label="所需积分" prop="score">
+      <el-form-item label="所需金额" prop="score" v-if="false">
         <el-input v-model="form.score" disabled></el-input>
       </el-form-item>
       <el-form-item label="图书数量" prop="nums">
         <el-input v-model="form.nums" disabled></el-input>
       </el-form-item>
       <br />
-      <el-form-item label="会员码" prop="userNo">
+      <el-form-item label="用户码" prop="userNo">
         <el-select v-model="form.userNo" filterable placeholder="请选择" @change="selUser">
           <el-option
               v-for="item in users"
@@ -38,8 +38,18 @@
       <el-form-item label="用户联系方式" prop="userPhone">
         <el-input disabled v-model="form.userPhone" ></el-input>
       </el-form-item>
-      <el-form-item label="用户账户积分" prop="account">
+      <el-form-item label="学生账户余额" prop="account" v-if="false">
         <el-input disabled v-model="form.account" ></el-input>
+      </el-form-item>
+      <el-form-item label="存储位置" prop="bookNo">
+        <el-select v-model="form.adress" clearable filterable placeholder="请选择">
+          <el-option
+                  v-for="item in bcbooks"
+                  :key="item.adress"
+                  :label="item.adress"
+                  :value="item.adress">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="借出的天数" prop="days">
         <el-input-number v-model="form.days" :min="1" :max="30" label="借出的天数"></el-input-number>
@@ -59,6 +69,7 @@ export default {
   name: 'AddBook',
   data() {
     return {
+       bcbooks: [],
       form: {days: 1},
       books: [],
       users: [],
@@ -103,6 +114,9 @@ export default {
         this.form.score = res.data.score
         this.form.nums = res.data.nums
       })
+        request.get('/book/bcid/' + book.id).then(res => {
+            this.bcbooks = res.data
+        })
     },
     selUser() {
       const user = this.users.find(v => v.username === this.form.userNo)

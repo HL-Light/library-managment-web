@@ -32,7 +32,7 @@
       <el-form-item label="标准码" prop="bookNo">
         <el-input v-model="form.bookNo" placeholder="请输入标准码"></el-input>
       </el-form-item>
-      <el-form-item label="借书积分" prop="cover">
+      <el-form-item label="借书积分" prop="cover" v-if="false">
         <el-input-number v-model="form.score" :min="10" :max="30" label="所需积分"></el-input-number>
       </el-form-item>
       <br>
@@ -63,8 +63,8 @@ export default {
   name: 'EditBook',
   data() {
     return {
-      admin: Cookies.get('admin') ? JSON.parse(Cookies.get('admin')) : {},
-      form: { score: 10 },
+      admin: Cookies.get('token') ? JSON.parse(Cookies.get('token')) : {},
+      form: { score: 0 },
       categories: [],
       rules: {
         name: [
@@ -74,7 +74,7 @@ export default {
           { required: true, message: '请输入图书标准码', trigger: 'blur'}
         ],
         score: [
-          { required: true, message: '请输入借书积分', trigger: 'blur'}
+          { required: true, message: '请输入借书金额', trigger: 'blur'}
         ]
       }
     }
@@ -88,7 +88,9 @@ export default {
     request.get("/book/" + id).then(res => {
       this.form = res.data
       if (this.form.category) {
-        this.form.categories = this.form.category.split(' > ')
+       const mainClass = this.form.category[0] // 取字符串第一个字符，即主类号"A"
+       const subClass = this.form.category.substring(1)
+        this.form.categories.push([mainClass,subClass])
         console.log(this.form.categories)
       }
     })
@@ -100,6 +102,9 @@ export default {
       }
     },
     save() {
+        const categoryStr = this.form.categories.join('')
+        this.form.category = categoryStr
+        console.log(this.form.categories)
       request.put('/book/update', this.form).then(res => {
         if (res.code === '200') {
           this.$notify.success('更新成功')

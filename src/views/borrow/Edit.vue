@@ -15,7 +15,7 @@
       <el-form-item label="图书名称" prop="bookName">
         <el-input v-model="form.bookName" disabled></el-input>
       </el-form-item>
-      <el-form-item label="所需积分" prop="score">
+      <el-form-item label="所需金额" prop="score" v-if="false">
         <el-input v-model="form.score" disabled></el-input>
       </el-form-item>
       <el-form-item label="图书数量" prop="nums">
@@ -23,7 +23,7 @@
       </el-form-item>
 
       <br />
-      <el-form-item label="会员码" prop="userNo">
+      <el-form-item label="用户码" prop="userNo">
         <el-select v-model="form.userNo" filterable placeholder="请选择" @change="selUser">
           <el-option
               v-for="item in users"
@@ -39,7 +39,7 @@
       <el-form-item label="用户联系方式" prop="userPhone">
         <el-input disabled v-model="form.userPhone" ></el-input>
       </el-form-item>
-      <el-form-item label="用户账户积分" prop="account">
+      <el-form-item label="学生账户积分" prop="account" v-if="false">
         <el-input disabled v-model="form.account" ></el-input>
       </el-form-item>
       <el-form-item label="借出的天数" prop="days">
